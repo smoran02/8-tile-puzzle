@@ -1,0 +1,97 @@
+* {
+    font-family: georgia, sans-serif;
+}
+
+.wrapper {
+    margin-top: 80px;
+    text-align: center;
+    width: 40%;
+    display: inline-block;
+}
+
+.sidebar1 {
+    margin-top: 80px;
+    width: 30%;
+    display: inline-block;
+    background: teal;
+    text-align: center;
+}
+
+.sidebar2 {
+    margin-top: 80px;
+    width: 30%;
+    display: inline-block;
+    background: teal;
+}
+
+.tile {
+    width: 80px;
+    height: 80px;
+    background: #990000;
+    display: inline-block;
+    position: relative;
+    transition: 0.2s;
+    color: #CCCC66;
+    text-align: center;
+    border-radius: 5px;
+    line-height: 80px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: default;
+    box-shadow: 0px 4px #700000;
+    }
+
+.tile:active {
+    box-shadow: 0px 0px #990000;
+    top: 4px;
+}
+
+.lighttile {
+    background: #BB0000;
+
+}
+
+.blank {
+    width: 80px;
+    height: 80px;
+    background: #CCC;
+    display: inline-block;
+    position: relative;
+    transition: 0.2s;
+    border-radius: 5px;
+    line-height: 80px;
+    vertical-align: bottom;
+    color: white;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: default;
+    box-shadow: 0px 4px #666666;
+}
+
+.row {
+    margin-top: 9px;
+}
+
+.newGame {
+    position: absolute;
+    top: 40%;
+    font-size: 1.2em;
+    padding: 8px;
+    background: #990000;
+    color: #CCCC66;
+    border-radius: 5px;
+}
+
+.newGame:hover {
+    opacity: 0.85;
+}
+
+.gameborder {
+    background: teal;
+    width: 290px;
+    height: 290px;
+    display: inline-block;
+    border-radius: 5px;
+}
