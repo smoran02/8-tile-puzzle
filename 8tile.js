@@ -13,8 +13,7 @@ $(document).ready(function() {
         }
 
         for (var i = 0; i < 9; i++) {
-            var j = i + 1;
-            var x = "sq" + j;
+            var x = "sq" + i;
             var y = document.getElementById(x);
             if (numbers[i] == 0) {
                 y.className = y.className + " blank";
@@ -28,8 +27,8 @@ $(document).ready(function() {
 
     var numbers = [0,1,2,3,4,5,6,7,8];
 
-    makeNewPuzzle();    
-    
+    makeNewPuzzle();
+
     $('.tile').on('mouseenter', changeColor).on('mouseleave', changeColor);
 
     $('.newGame').on('click', function() {
@@ -39,11 +38,17 @@ $(document).ready(function() {
     });
 
     $('.tile').on('click', function() {
-        $('.blank').addClass('tile');
-        $('.blank').text($(this).text());
-        $('.blank').removeClass('blank');
-        $(this).addClass('blank');
-        $(this).removeClass('tile');
-        $(this).text("");
+        var thisid = parseInt($(this).attr('id')[2]);
+        var blankid = parseInt($('.blank').attr('id')[2]);
+        if ((thisid - 3 == blankid) || 
+            (thisid + 3 == blankid) || 
+            ((parseInt(thisid / 3) == parseInt(blankid / 3)) && (Math.abs(thisid - blankid) == 1))) {
+            $('.blank').addClass('tile');
+            $('.blank').text($(this).text());
+            $('.blank').removeClass('blank');
+            $(this).addClass('blank');
+            $(this).removeClass('tile');
+            $(this).text("");    
+        }
     });
 });

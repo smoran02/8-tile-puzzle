@@ -5,39 +5,40 @@
 
 <title>8 Tile Puzzle</title>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-<script type ="text/javascript" src="app.js"></script>
-<link rel="stylesheet" href="appstyle.css" />
+<script type ="text/javascript" src="8tile.js"></script>
+<link rel="stylesheet" href="8tilestyle.css" />
 
 </head>
 
 <body>
 
 <div class="sidebar1">
-    <button class="newGame">Make New Puzzle</button>
+    <button class="newGame">New Puzzle</button>
 </div>
 
 <div class="wrapper">
     <h1>8 Tile Puzzle</h1>
     <div class="gameborder">
         <div class="row">
+            <div class="tile" id="sq0"></div>
             <div class="tile" id="sq1"></div>
             <div class="tile" id="sq2"></div>
-            <div class="tile" id="sq3"></div>
         </div>
         <div class="row">
+            <div class="tile" id="sq3"></div>
             <div class="tile" id="sq4"></div>
             <div class="tile" id="sq5"></div>
-            <div class="tile" id="sq6"></div>
         </div>
         <div class="row">
+            <div class="tile" id="sq6"></div>
             <div class="tile" id="sq7"></div>
             <div class="tile" id="sq8"></div>
-            <div class="tile" id="sq9"></div>
         </div>
     </div>
 </div>
 
 <div class="sidebar2">
+    <p>The puzzle is playable now. I just have to implement the A* search, and then add the UI/style stuff.</p>
 </div>
 
 

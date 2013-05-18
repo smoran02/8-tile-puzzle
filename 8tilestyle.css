@@ -13,15 +13,13 @@
     margin-top: 80px;
     width: 30%;
     display: inline-block;
-    background: teal;
     text-align: center;
 }
 
 .sidebar2 {
     margin-top: 80px;
-    width: 30%;
+    width: 20%;
     display: inline-block;
-    background: teal;
 }
 
 .tile {
@@ -79,8 +77,6 @@
     top: 40%;
     font-size: 1.2em;
     padding: 8px;
-    background: #990000;
-    color: #CCCC66;
     border-radius: 5px;
 }
 
@@ -89,7 +85,6 @@
 }
 
 .gameborder {
-    background: teal;
     width: 290px;
     height: 290px;
     display: inline-block;
