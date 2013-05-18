@@ -7,6 +7,7 @@ $(document).ready(function() {
     function makeNewPuzzle() {
         $('.victory').hide();
         moves = 0;
+        gameWon = false;
         for (var i = 0; i < numbers.length; i++) {
             var index = Math.floor(Math.random() * 8);
             var temp = numbers[i];
@@ -15,8 +16,7 @@ $(document).ready(function() {
         }
 
         for (var i = 0; i < 9; i++) {
-            var x = "sq" + i;
-            var y = document.getElementById(x);
+            var y = document.getElementById("sq" + i);
             if (numbers[i] == 0) {
                 y.className = y.className + " blank";
                 y.innerHTML = "";
@@ -37,23 +37,15 @@ $(document).ready(function() {
 
     function goalState() {
         for (var i = 0; i < 8; i++) {
-            if (i == 0) {
-                var y = document.getElementById("sq" + 8);
-                if (y.innerHTML != "") {
-                    return false;
-                }
-            }
-            else {
-                var y = document.getElementById("sq" + i);
-                if (y.innerHTML != i + 1) {
-                    return false;
-                }
-            }
+            var y = document.getElementById("sq" + i);
+            if (y.innerHTML != i + 1) {
+                return false;
+            }            
         }
         return true;
     };
 
-    function calcManDistance() {
+    function calcHeuristics() {
 
     };
 
@@ -61,6 +53,7 @@ $(document).ready(function() {
     var ManDistance = -1;
     var fOfX = -1;
     var moves = 0;
+    var gameWon = false;
 
     makeNewPuzzle();
 
@@ -76,9 +69,10 @@ $(document).ready(function() {
         var thisid = parseInt($(this).attr('id')[2]);
         var blankid = parseInt($('.blank').attr('id')[2]);
 
-        if ((thisid - 3 == blankid) || 
+        if (gameWon == false &&
+            ((thisid - 3 == blankid) || 
             (thisid + 3 == blankid) || 
-            ((parseInt(thisid / 3) == parseInt(blankid / 3)) && (Math.abs(thisid - blankid) == 1))) {
+            ((parseInt(thisid / 3) == parseInt(blankid / 3)) && (Math.abs(thisid - blankid) == 1)))) {
                 moves++;   
                 var temp = numbers[thisid];
                 numbers[thisid] = numbers[blankid];
@@ -93,6 +87,7 @@ $(document).ready(function() {
                 if (goalState()) {
                     $('.victory').html("You win the game in " + moves + " moves!");
                     $('.victory').show();
+                    gameWon = true;
                 }
 
         }
