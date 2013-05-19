@@ -26,6 +26,7 @@ $(document).ready(function() {
             }
         }
         calcHeuristics();
+        config = getConfig();
         trackOutputs();
     };
 
@@ -33,17 +34,8 @@ $(document).ready(function() {
         $('.sidebar2').html("Array contents:<br/>" + numbers +
                             "<br/><br/>ManHattan Distance:<br/>" + manDistance +
                             "<br/><br/>f(x):<br/>" + fOfX +
-                            "<br/><br/>Moves:<br/>" + moves);
-    };
-
-    function goalState() {
-        for (var i = 0; i < 8; i++) {
-            var y = document.getElementById("sq" + i);
-            if (y.innerHTML != i + 1) {
-                return false;
-            }            
-        }
-        return true;
+                            "<br/><br/>Moves:<br/>" + moves +
+                            "<br/><br/>Config:<br/>" + config);
     };
 
     function calcHeuristics() {
@@ -69,11 +61,32 @@ $(document).ready(function() {
         fOfX = manDistance + moves;
     };
 
+    function getConfig() {
+        var total = 0;
+        for (var i = 0; i < 8; i++) {
+            for (var j = i + 1; j < 9; j++) {
+                if (numbers[i] == 0 || numbers[j] == 0) {
+                    total += 0;
+                }
+                else {
+                    if (numbers[j] < numbers[i]) {
+                        total += 1;
+                    }
+                }
+            }
+        }
+        if (total % 2 == 0) {
+            return "configB";
+        }
+        return "configA";
+    };
+
     var numbers = [0,1,2,3,4,5,6,7,8];
     var manDistance = -1;
     var fOfX = -1;
     var moves = 0;
     var gameWon = false;
+    var config = "";
 
     makeNewPuzzle();
 
@@ -105,7 +118,7 @@ $(document).ready(function() {
                 $(this).html("");
                 calcHeuristics();
                 trackOutputs();
-                if (goalState()) {
+                if (manDistance == 0) {
                     $('.victory').html("You win the game in " + moves + " moves!");
                     $('.victory').show();
                     gameWon = true;
