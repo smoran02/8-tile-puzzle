@@ -25,8 +25,8 @@ $(document).ready(function() {
                 y.innerHTML = numbers[i];
             }
         }
-        calcHeuristics();
         config = getConfig();
+        calcHeuristics();
         trackOutputs();
     };
 
@@ -39,6 +39,19 @@ $(document).ready(function() {
     };
 
     function calcHeuristics() {
+        if (config == "A") {
+            calcHeuristicsA();
+        }
+        else {
+            calcHeuristicsB();
+        }
+    };
+
+    function calcHeuristicsA() {
+
+    };
+
+    function calcHeuristicsB() {
 
         manDistance = 0;
 
@@ -76,9 +89,9 @@ $(document).ready(function() {
             }
         }
         if (total % 2 == 0) {
-            return "configB";
+            return "B";
         }
-        return "configA";
+        return "A";
     };
 
     var numbers = [0,1,2,3,4,5,6,7,8];
