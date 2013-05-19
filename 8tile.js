@@ -25,12 +25,13 @@ $(document).ready(function() {
                 y.innerHTML = numbers[i];
             }
         }
+        calcHeuristics();
         trackOutputs();
     };
 
     function trackOutputs(){
         $('.sidebar2').html("Array contents:<br/>" + numbers +
-                            "<br/><br/>ManHattan Distance:<br/>" + ManDistance +
+                            "<br/><br/>ManHattan Distance:<br/>" + manDistance +
                             "<br/><br/>f(x):<br/>" + fOfX +
                             "<br/><br/>Moves:<br/>" + moves);
     };
@@ -47,10 +48,29 @@ $(document).ready(function() {
 
     function calcHeuristics() {
 
+        manDistance = 0;
+
+        for (var i = 0; i < 9; i++) {
+            var x = Math.max(i, numbers[i] - 1);
+            var y = Math.min(i, numbers[i] - 1);
+            if (numbers[i] == 0) {
+                x = y;
+            }
+            if (x == y) {
+                manDistance += 0;
+            }
+            while (parseInt(x / 3) != parseInt(y / 3)) {
+                x -= 3;
+                manDistance++;
+            }
+            manDistance += Math.abs(x - y);
+        }
+
+        fOfX = manDistance + moves;
     };
 
     var numbers = [0,1,2,3,4,5,6,7,8];
-    var ManDistance = -1;
+    var manDistance = -1;
     var fOfX = -1;
     var moves = 0;
     var gameWon = false;
@@ -83,6 +103,7 @@ $(document).ready(function() {
                 $(this).addClass('blank');
                 $(this).removeClass('tile');
                 $(this).html("");
+                calcHeuristics();
                 trackOutputs();
                 if (goalState()) {
                     $('.victory').html("You win the game in " + moves + " moves!");
