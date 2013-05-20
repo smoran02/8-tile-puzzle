@@ -54,7 +54,6 @@ $(document).ready(function() {
             var x = Math.max(i, numbers[i] - 1);
             var y = Math.min(i, numbers[i] - 1);
             var z = i;
-            alert(i + 'i,' + x + 'x,' + y + 'y,' + z + 'z,' + manDistance);
             if (numbers[i] == 0) {
                 manDistance += 0;
             }
