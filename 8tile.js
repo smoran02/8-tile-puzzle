@@ -48,11 +48,53 @@ $(document).ready(function() {
     };
 
     function calcHeuristicsA() {
+        manDistance = 0;
 
+        for (var i = 0; i < 9; i++) {
+            var x = Math.max(i, numbers[i] - 1);
+            var y = Math.min(i, numbers[i] - 1);
+            var z = i;
+            alert(i + 'i,' + x + 'x,' + y + 'y,' + z + 'z,' + manDistance);
+            if (numbers[i] == 0) {
+                manDistance += 0;
+            }
+            else if (numbers[i] < 4) {
+                while (parseInt(x / 3) != parseInt(y / 3)) {
+                    x -= 3;
+                    manDistance++;
+                }
+                manDistance += Math.abs(x - y);
+            }
+            else if (numbers[i] == 4) {
+                while (parseInt(z / 3) != 1) {
+                    if (z > 5) {z -= 3;}
+                    else {z += 3;}
+                    manDistance++;
+                }
+                manDistance += Math.abs(z - 5);
+            }
+            else if (numbers[i] < 8) {
+                while (parseInt(z / 3) != 2) {
+                    z += 3;
+                    manDistance++;
+                }
+                if (numbers[i] == 5) { manDistance += Math.abs(z - 8); }
+                else if (numbers[i] == 6) { manDistance += Math.abs(z - 7); }
+                else { manDistance += Math.abs(z - 6);}
+            }
+            else if (numbers[i] == 8) {
+                while (parseInt(z / 3) != 1) {
+                    if (z > 5) {z -= 3;}
+                    else {z += 3;}
+                    manDistance++;
+                }
+                manDistance += Math.abs(z - 3);
+            }
+        }
+        fOfX = manDistance + moves;
     };
 
     function calcHeuristicsB() {
-
         manDistance = 0;
 
         for (var i = 0; i < 9; i++) {
@@ -60,9 +102,6 @@ $(document).ready(function() {
             var y = Math.min(i, numbers[i] - 1);
             if (numbers[i] == 0) {
                 x = y;
-            }
-            if (x == y) {
-                manDistance += 0;
             }
             while (parseInt(x / 3) != parseInt(y / 3)) {
                 x -= 3;
