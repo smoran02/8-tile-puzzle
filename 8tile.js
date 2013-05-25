@@ -1,5 +1,7 @@
 $(document).ready(function() {
     
+
+
     function changeColor() {
         $(this).toggleClass('lighttile');
     };
@@ -25,8 +27,8 @@ $(document).ready(function() {
                 y.innerHTML = numbers[i];
             }
         }
-        config = getConfig();
-        calcHeuristics();
+        config = getConfig(numbers);
+        calcHeuristics(numbers);
         trackOutputs();
     };
 
@@ -38,16 +40,16 @@ $(document).ready(function() {
                             "<br/><br/>Config:<br/>" + config);
     };
 
-    function calcHeuristics() {
+    function calcHeuristics(numbers) {
         if (config == "A") {
-            calcHeuristicsA();
+            calcHeuristicsA(numbers);
         }
         else {
-            calcHeuristicsB();
+            calcHeuristicsB(numbers);
         }
     };
 
-    function calcHeuristicsA() {
+    function calcHeuristicsA(numbers) {
         manDistance = 0;
 
         for (var i = 0; i < 9; i++) {
@@ -77,9 +79,9 @@ $(document).ready(function() {
                     z += 3;
                     manDistance++;
                 }
-                if (numbers[i] == 5) { manDistance += Math.abs(z - 8); }
-                else if (numbers[i] == 6) { manDistance += Math.abs(z - 7); }
-                else { manDistance += Math.abs(z - 6);}
+                if (numbers[i] == 5) {manDistance += Math.abs(z - 8);}
+                else if (numbers[i] == 6) {manDistance += Math.abs(z - 7);}
+                else {manDistance += Math.abs(z - 6);}
             }
             else if (numbers[i] == 8) {
                 while (parseInt(z / 3) != 1) {
@@ -93,7 +95,7 @@ $(document).ready(function() {
         fOfX = manDistance + moves;
     };
 
-    function calcHeuristicsB() {
+    function calcHeuristicsB(numbers) {
         manDistance = 0;
 
         for (var i = 0; i < 9; i++) {
@@ -112,7 +114,7 @@ $(document).ready(function() {
         fOfX = manDistance + moves;
     };
 
-    function getConfig() {
+    function getConfig(numbers) {
         var total = 0;
         for (var i = 0; i < 8; i++) {
             for (var j = i + 1; j < 9; j++) {
@@ -167,7 +169,7 @@ $(document).ready(function() {
                 $(this).addClass('blank');
                 $(this).removeClass('tile');
                 $(this).html("");
-                calcHeuristics();
+                calcHeuristics(numbers);
                 trackOutputs();
                 if (manDistance == 0) {
                     $('.victory').html("You win the game in " + moves + " moves!");
