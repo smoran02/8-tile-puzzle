@@ -10,64 +10,8 @@ $(document).ready(function() {
         this.numbers = boardArray;
         this.fOfx = -1;
         this.moves = [];
-        this.config = "";
 
         this.calcHeuristics = function() {
-            if (this.config == "A") {
-                this.calcHeuristicsA();
-            }
-            else {
-                this.calcHeuristicsB();
-            }
-        };
-
-        this.calcHeuristicsA = function() {
-            this.manDistance = 0;
-
-            for (var i = 0; i < 9; i++) {
-                var x = Math.max(i, this.numbers[i] - 1);
-                var y = Math.min(i, this.numbers[i] - 1);
-                var z = i;
-                if (this.numbers[i] == 0) {
-                    this.manDistance += 0;
-                }
-                else if (this.numbers[i] < 4) {
-                    while (parseInt(x / 3) != parseInt(y / 3)) {
-                        x -= 3;
-                        this.manDistance++;
-                    }
-                    this.manDistance += Math.abs(x - y);
-                }
-                else if (this.numbers[i] == 4) {
-                    while (parseInt(z / 3) != 1) {
-                        if (z > 5) {z -= 3;}
-                        else {z += 3;}
-                        this.manDistance++;
-                    }
-                    this.manDistance += Math.abs(z - 5);
-                }
-                else if (this.numbers[i] < 8) {
-                    while (parseInt(z / 3) != 2) {
-                        z += 3;
-                        this.manDistance++;
-                    }
-                    if (this.numbers[i] == 5) {this.manDistance += Math.abs(z - 8);}
-                    else if (this.numbers[i] == 6) {this.manDistance += Math.abs(z - 7);}
-                    else {this.manDistance += Math.abs(z - 6);}
-                }
-                else if (this.numbers[i] == 8) {
-                    while (parseInt(z / 3) != 1) {
-                        if (z > 5) {z -= 3;}
-                        else {z += 3;}
-                        this.manDistance++;
-                    }
-                this.manDistance += Math.abs(z - 3);
-                }
-            }
-            this.fOfx = parseInt(this.manDistance) + parseInt(this.moves.length);
-        };
-
-        this.calcHeuristicsB = function() {
             this.manDistance = 0;
 
             for (var i = 0; i < 9; i++) {
@@ -86,35 +30,11 @@ $(document).ready(function() {
             this.fOfx = parseInt(this.manDistance) + parseInt(this.moves.length);
         };
 
-        this.getConfig = function() {
-            var total = 0;
-            for (var i = 0; i < 8; i++) {
-                for (var j = i + 1; j < 9; j++) {
-                    if (this.numbers[i] == 0 || this.numbers[j] == 0) {
-                        total += 0;
-                    }
-                    else {
-                        if (this.numbers[j] < this.numbers[i]) {
-                            total += 1;
-                        }
-                    }
-                }
-            }
-
-            if (total % 2 == 0) {
-                this.config = "B";
-            }
-            else {
-                this.config = "A";
-            }
-        };
-
         this.trackOutputs = function() {
             $('.sidebar2').html("Array contents:<br/>" + this.numbers +
                                 "<br/><br/>ManHattan Distance:<br/>" + this.manDistance +
                                 "<br/><br/>f(x):<br/>" + this.fOfx +
-                                "<br/><br/>Moves:<br/>" + this.moves.length +
-                                "<br/><br/>Config:<br/>" + this.config);
+                                "<br/><br/>Moves:<br/>" + this.moves.length);
         };
     }
 
@@ -125,6 +45,7 @@ $(document).ready(function() {
     function makeNewPuzzle() {
         $('.victory').hide();
         gameWon = false;
+        $('.blank').removeClass('blank');
         for (var i = 0; i < board.length; i++) {
             var index = Math.floor(Math.random() * 8);
             var temp = board[i];
@@ -132,24 +53,61 @@ $(document).ready(function() {
             board[index] = temp;
         }
 
-        for (var i = 0; i < 9; i++) {
-            var y = document.getElementById("sq" + i);
-            if (board[i] == 0) {
-                y.className = y.className + " blank";
-                y.innerHTML = "";
-            }
-            else {
-                y.innerHTML = board[i];
-            }
-        }
-
-        var initialState = new Node(board);
-        initialState.getConfig();
-        alert(initialState.config);
-        initialState.calcHeuristics();
-        initialState.trackOutputs();
-        open.push(initialState);
+        ensureSolvability();
     };
+
+    function ensureSolvability() {
+            var total = 0;
+            var zeroIndex = -1;
+            for (var i = 0; i < 8; i++) {
+                for (var j = i + 1; j < 9; j++) {
+                    if (board[i] == 0 || board[j] == 0) {
+                        if (board[i] == 0) {
+                            zeroIndex = i;
+                        }
+                        else {
+                            zeroIndex = j;
+                        }
+                        total += 0;
+                    }
+                    else {
+                        if (board[j] < board[i]) {
+                            total += 1;
+                        }
+                    }
+                }
+            }
+
+            if (total % 2 != 0) {
+                if (zeroIndex < 7) {
+                    var temp = board[8];
+                    board[8] = board[7];
+                    board[7] = temp;
+                }
+                else if (zeroIndex == 7) {
+                    var temp = board[8];
+                    board[8] = board[6];
+                    board[6] = temp;
+                }
+                else {
+                    var temp = board[6];
+                    board[6] = board[7];
+                    board[7] = temp;
+                }
+            }
+
+            for (var i = 0; i < 9; i++) {
+                var y = document.getElementById("sq" + i);
+                if (board[i] == 0) {
+                    y.className = y.className + " blank";
+                    y.innerHTML = "";
+                }
+                else {
+                    y.innerHTML = board[i];
+                }
+            }
+
+        };
 
     function addStateToQueue(addToQueue) {
         var added = false;
@@ -179,6 +137,12 @@ $(document).ready(function() {
     };
 
     function solvePuzzle() {
+
+        var initialState = new Node(board);
+        initialState.calcHeuristics();
+        initialState.trackOutputs();
+        open.push(initialState);
+
         while (open[0].manDistance != 0) {
 
             for (var i = 0; i < 9; i++) {
@@ -199,11 +163,9 @@ $(document).ready(function() {
                         addToQueue.moves = open[0].moves.slice();
                         addToQueue.moves.push(nextMove);
                         addToQueue.calcHeuristics();
-                        addToQueue.config = open[0].config;
                         if (nextMove != open[0].moves[open[0].moves.length - 1]) {
                             addStateToQueue(addToQueue);    
                         }
-                        
                 }
             }
             closed.push(open[0]);
@@ -212,13 +174,12 @@ $(document).ready(function() {
                 return c.fOfx - d.fOfx;
             });
         }
-
+    $('.sidebar2').append('<br><br>Solution found in ' + open[0].moves.length + ' moves:<br>' + open[0].moves);
         
     };
 
     makeNewPuzzle();
     solvePuzzle();
-    $('.sidebar2').append('<br><br>Solution found in ' + open[0].moves.length + ' moves:<br>' + open[0].moves);
 
     $('.tile').on('mouseenter', changeColor).on('mouseleave', changeColor);
 
@@ -226,6 +187,7 @@ $(document).ready(function() {
         $('.blank').addClass('tile');
         $('.blank').removeClass('blank');
         makeNewPuzzle();
+        solvePuzzle();
     });
 
     $('.tile').on('click', function() {
