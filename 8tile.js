@@ -4,6 +4,7 @@ $(document).ready(function() {
     var gameWon = false;
     var open = [];
     var closed = [];
+    var moves = 0;
 
     function Node(boardArray) {
         this.manDistance = -1;
@@ -34,7 +35,7 @@ $(document).ready(function() {
             $('.sidebar2').html("Array contents:<br/>" + this.numbers +
                                 "<br/><br/>ManHattan Distance:<br/>" + this.manDistance +
                                 "<br/><br/>f(x):<br/>" + this.fOfx +
-                                "<br/><br/>Moves:<br/>" + this.moves.length);
+                                "<br/><br/>Moves:<br/>" + moves);
         };
     }
 
@@ -45,6 +46,7 @@ $(document).ready(function() {
     function makeNewPuzzle() {
         $('.victory').hide();
         gameWon = false;
+        moves = 0;
         $('.blank').removeClass('blank');
         for (var i = 0; i < board.length; i++) {
             var index = Math.floor(Math.random() * 8);
@@ -138,6 +140,13 @@ $(document).ready(function() {
 
     function solvePuzzle() {
 
+        if (open.length != 0) {
+            open.splice(0, open.length);
+        }
+        if (closed.length != 0) {
+            closed.splice(0, closed.length);
+        }
+
         var initialState = new Node(board);
         initialState.calcHeuristics();
         initialState.trackOutputs();
@@ -174,8 +183,28 @@ $(document).ready(function() {
                 return c.fOfx - d.fOfx;
             });
         }
-    $('.sidebar2').append('<br><br>Solution found in ' + open[0].moves.length + ' moves:<br>' + open[0].moves);
+
+        $('.sidebar2').append('<br><br>Solution found in ' + open[0].moves.length + ' moves:<br>' + open[0].moves);
         
+    };
+
+    function calculateMD(boardArray) {
+        var mDistance = 0;
+
+            for (var i = 0; i < 9; i++) {
+                var x = Math.max(i, boardArray[i] - 1);
+                var y = Math.min(i, boardArray[i] - 1);
+                if (boardArray[i] == 0) {
+                    x = y;
+                }
+                while (parseInt(x / 3) != parseInt(y / 3)) {
+                    x -= 3;
+                    mDistance++;
+                }
+                mDistance += Math.abs(x - y);
+            }  
+
+            return mDistance;
     };
 
     makeNewPuzzle();
@@ -198,21 +227,22 @@ $(document).ready(function() {
             ((thisid - 3 == blankid) || 
             (thisid + 3 == blankid) || 
             ((parseInt(thisid / 3) == parseInt(blankid / 3)) && (Math.abs(thisid - blankid) == 1)))) {
+                moves++;
                 var temp = board[thisid];
                 board[thisid] = board[blankid];
                 board[blankid] = temp;
+                solvePuzzle();
                 $('.blank').addClass('tile');
                 $('.blank').html($(this).html());
                 $('.blank').removeClass('blank');
                 $(this).addClass('blank');
                 $(this).removeClass('tile');
                 $(this).html("");
-                if (manDistance == 0) {
+                if (calculateMD(board) == 0) {
                     $('.victory').html("You win the game in " + moves + " moves!");
                     $('.victory').show();
                     gameWon = true;
                 }
-
         }
     });
 });
