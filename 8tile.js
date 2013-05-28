@@ -1,12 +1,14 @@
 $(document).ready(function() {
-    
+   
     var board = [0,1,2,3,4,5,6,7,8];
     var gameWon = false;
+    var open = [];
+    var closed = [];
 
     function Node(boardArray) {
         this.manDistance = -1;
         this.numbers = boardArray;
-        this.fofX = -1;
+        this.fOfx = -1;
         this.moves = [];
         this.config = "";
 
@@ -62,7 +64,7 @@ $(document).ready(function() {
                 this.manDistance += Math.abs(z - 3);
                 }
             }
-            this.fOfX = this.manDistance + this.moves.length;
+            this.fOfx = parseInt(this.manDistance) + parseInt(this.moves.length);
         };
 
         this.calcHeuristicsB = function() {
@@ -81,7 +83,7 @@ $(document).ready(function() {
                 this.manDistance += Math.abs(x - y);
             }  
 
-            this.fOfX = this.manDistance + this.moves;
+            this.fOfx = parseInt(this.manDistance) + parseInt(this.moves.length);
         };
 
         this.getConfig = function() {
@@ -110,7 +112,7 @@ $(document).ready(function() {
         this.trackOutputs = function() {
             $('.sidebar2').html("Array contents:<br/>" + this.numbers +
                                 "<br/><br/>ManHattan Distance:<br/>" + this.manDistance +
-                                "<br/><br/>f(x):<br/>" + this.fOfX +
+                                "<br/><br/>f(x):<br/>" + this.fOfx +
                                 "<br/><br/>Moves:<br/>" + this.moves.length +
                                 "<br/><br/>Config:<br/>" + this.config);
         };
@@ -143,11 +145,80 @@ $(document).ready(function() {
 
         var initialState = new Node(board);
         initialState.getConfig();
+        alert(initialState.config);
         initialState.calcHeuristics();
         initialState.trackOutputs();
+        open.push(initialState);
+    };
+
+    function addStateToQueue(addToQueue) {
+        var added = false;
+        for (var i = 0; i < open.length; i++) {
+            if (addToQueue.numbers == open[i].numbers) {
+                added = true;
+                if (addToQueue.fOfx < open[i].fOfx) {
+                    open.splice(i, 1);
+                    open.push(addToQueue);
+                }
+            }
+        }
+
+        for (var i = 0; i < closed.length; i++) {
+            if (addToQueue.numbers == closed[i].numbers) {
+                added = true;
+                if (addToQueue.fOfx < closed[i].fOfx) {
+                    closed.splice(i, 1);
+                    open.push(addToQueue);
+                }
+            }
+        }
+
+        if (added == false) {
+            open.push(addToQueue);
+        }
+    };
+
+    function solvePuzzle() {
+        while (open[0].manDistance != 0) {
+
+            for (var i = 0; i < 9; i++) {
+                if (open[0].numbers[i] == 0) {
+                    blankid = i;
+                }
+            }
+
+            for (var i = 0; i < 9; i++) {
+                if ((i - 3 == blankid) || (i + 3 == blankid) ||
+                    (parseInt(i / 3) == parseInt(blankid / 3) && (Math.abs(i - blankid) == 1))) {
+                        var nextMove = open[0].numbers[i];
+                        var nextBoard = open[0].numbers.slice();
+                        var temp = nextBoard[i];
+                        nextBoard[i] = nextBoard[blankid];
+                        nextBoard[blankid] = temp;
+                        var addToQueue = new Node(nextBoard);
+                        addToQueue.moves = open[0].moves.slice();
+                        addToQueue.moves.push(nextMove);
+                        addToQueue.calcHeuristics();
+                        addToQueue.config = open[0].config;
+                        if (nextMove != open[0].moves[open[0].moves.length - 1]) {
+                            addStateToQueue(addToQueue);    
+                        }
+                        
+                }
+            }
+            closed.push(open[0]);
+            open.shift();
+            open.sort(function(c, d) {
+                return c.fOfx - d.fOfx;
+            });
+        }
+
+        
     };
 
     makeNewPuzzle();
+    solvePuzzle();
+    $('.sidebar2').append('<br><br>Solution found in ' + open[0].moves.length + ' moves:<br>' + open[0].moves);
 
     $('.tile').on('mouseenter', changeColor).on('mouseleave', changeColor);
 
