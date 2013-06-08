@@ -218,13 +218,15 @@ $(document).ready(function() {
 
     $('#answers').on('click', function() {
         $(this).toggleClass('darkanswer');
-        if (showAnswers) {
-            showAnswers = false;
-            $('.sidebar2').text("Next Move: ");
-        }
-        else {
-            showAnswers = true;
-            $('.sidebar2').text("Next Move: " + open[0].moves[0]);
+        if (gameWon == false) {
+            if (showAnswers) {
+                showAnswers = false;
+                $('.sidebar2').text("Next Move: ");
+            }
+            else {
+                showAnswers = true;
+                $('.sidebar2').text("Next Move: " + open[0].moves[0]);
+            }
         }
     });
 
@@ -235,6 +237,37 @@ $(document).ready(function() {
         $('.blank').removeClass('blank');
         makeNewPuzzle();
         solvePuzzle();
+    });
+
+    $('#autosolve').on('click', function() {
+        var counter = 0;
+        while (calculateMD(board) != 0) {
+            var blankid = parseInt($('.blank').attr('id')[2]);
+            var thisid = -1;
+            var x = -1;
+            var nextMove = open[0].moves[counter];
+            for (var i = 0; i < 9; i++) {
+                if (board[i] == nextMove) {
+                    thisid = document.getElementById('sq' + i);
+                    x = i;
+                }
+            }
+            var temp = board[x];
+            board[x] = board[blankid];
+            board[blankid] = temp;
+            $('.blank').addClass('tile');
+            $('.blank').html($(thisid).html());
+            $('.blank').removeClass('blank');
+            $(thisid).addClass('blank');
+            $(thisid).removeClass('tile');
+            $(thisid).html("");
+            counter++;
+            moves++;
+        }
+        gameWon = true;
+        $('.victory').html("I guess you won the game in " + moves + " moves??");
+        $('.victory').show();
+        $('.sidebar2').text("Next Move: ");
     });
 
     $('.tile').on('click', function() {
@@ -258,7 +291,7 @@ $(document).ready(function() {
                 $(this).removeClass('tile');
                 $(this).html("");
                 if (calculateMD(board) == 0) {
-                    $('.victory').html("You win the game in " + moves + " moves!");
+                    $('.victory').html("You won the game in " + moves + " moves!");
                     $('.victory').show();
                     $('.sidebar2').text("Next Move: ");
                     gameWon = true;
