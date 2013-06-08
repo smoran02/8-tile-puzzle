@@ -5,6 +5,7 @@ $(document).ready(function() {
     var open = [];
     var closed = [];
     var moves = 0;
+    var showAnswers = false;
 
     function Node(boardArray) {
         this.manDistance = -1;
@@ -34,7 +35,6 @@ $(document).ready(function() {
         this.trackOutputs = function() {
             $('.sidebar2').html("Array contents:<br/>" + this.numbers +
                                 "<br/><br/>ManHattan Distance:<br/>" + this.manDistance +
-                                "<br/><br/>f(x):<br/>" + this.fOfx +
                                 "<br/><br/>Moves:<br/>" + moves);
         };
     }
@@ -48,6 +48,7 @@ $(document).ready(function() {
         gameWon = false;
         moves = 0;
         $('.blank').removeClass('blank');
+        $('.sidebar2').text("Next Move: ");
         for (var i = 0; i < board.length; i++) {
             var index = Math.floor(Math.random() * 8);
             var temp = board[i];
@@ -149,7 +150,6 @@ $(document).ready(function() {
 
         var initialState = new Node(board);
         initialState.calcHeuristics();
-        initialState.trackOutputs();
         open.push(initialState);
 
         while (open[0].manDistance != 0) {
@@ -183,9 +183,9 @@ $(document).ready(function() {
                 return c.fOfx - d.fOfx;
             });
         }
-
-        $('.sidebar2').append('<br><br>Solution found in ' + open[0].moves.length + ' moves:<br>' + open[0].moves);
-        
+        if (showAnswers) {
+        $('.sidebar2').text("Next Move: " + open[0].moves[0]);
+        }
     };
 
     function calculateMD(boardArray) {
@@ -210,9 +210,27 @@ $(document).ready(function() {
     makeNewPuzzle();
     solvePuzzle();
 
+    $('#hint').on('click', function() {
+        if (gameWon == false) {
+            $('.sidebar2').text("Next Move: " + open[0].moves[0]);
+        }
+    });
+
+    $('#answers').on('click', function() {
+        $(this).toggleClass('darkanswer');
+        if (showAnswers) {
+            showAnswers = false;
+            $('.sidebar2').text("Next Move: ");
+        }
+        else {
+            showAnswers = true;
+            $('.sidebar2').text("Next Move: " + open[0].moves[0]);
+        }
+    });
+
     $('.tile').on('mouseenter', changeColor).on('mouseleave', changeColor);
 
-    $('.newGame').on('click', function() {
+    $('#newGame').on('click', function() {
         $('.blank').addClass('tile');
         $('.blank').removeClass('blank');
         makeNewPuzzle();
@@ -228,6 +246,7 @@ $(document).ready(function() {
             (thisid + 3 == blankid) || 
             ((parseInt(thisid / 3) == parseInt(blankid / 3)) && (Math.abs(thisid - blankid) == 1)))) {
                 moves++;
+                $('.sidebar2').text("Next Move: ");
                 var temp = board[thisid];
                 board[thisid] = board[blankid];
                 board[blankid] = temp;
@@ -241,6 +260,7 @@ $(document).ready(function() {
                 if (calculateMD(board) == 0) {
                     $('.victory').html("You win the game in " + moves + " moves!");
                     $('.victory').show();
+                    $('.sidebar2').text("Next Move: ");
                     gameWon = true;
                 }
         }

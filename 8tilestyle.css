@@ -13,7 +13,7 @@
     margin-top: 80px;
     width: 30%;
     display: inline-block;
-    text-align: center;
+    overflow: hidden;
 }
 
 .sidebar2 {
@@ -21,6 +21,7 @@
     width: 20%;
     display: inline-block;
     font-family: georgia, sans-serif;
+    font-size: 1.6em;
 }
 
 .tile {
@@ -49,7 +50,16 @@
 
 .lighttile {
     background: #BB0000;
+}
 
+.darkanswer {
+    background: #808080;
+    color: white;
+    opacity: 1;
+}
+
+.darkanswer:hover {
+    opacity: .7;
 }
 
 .blank {
@@ -75,12 +85,14 @@
     margin-top: 9px;
 }
 
-.newGame {
-    position: absolute;
-    top: 40%;
+button {
     font-size: 1.2em;
     padding: 8px;
     border-radius: 5px;
+    width: 150px;
+    display: block;
+    opacity: 0.75;
+    float: right;
 }
 
 .victory:hover {
@@ -90,8 +102,8 @@
     transform: scale(1.5);
 }
 
-.newGame:hover {
-    opacity: 0.75;
+button:hover {
+    opacity: 1;
 }
 
 .gameborder {
