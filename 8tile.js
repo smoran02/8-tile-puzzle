@@ -47,6 +47,9 @@ $(document).ready(function() {
         $('.victory').hide();
         gameWon = false;
         moves = 0;
+        if (showAnswers) {
+            $('.sidebar2').text("Next Move: " + open[0].moves[0]);
+        }
         $('.blank').removeClass('blank');
         $('.sidebar2').text("Next Move: ");
         for (var i = 0; i < board.length; i++) {
@@ -218,16 +221,18 @@ $(document).ready(function() {
 
     $('#answers').on('click', function() {
         $(this).toggleClass('darkanswer');
-        if (gameWon == false) {
-            if (showAnswers) {
-                showAnswers = false;
+        if (showAnswers) {
+            showAnswers = false;
+            if (!gameWon) {
                 $('.sidebar2').text("Next Move: ");
             }
-            else {
-                showAnswers = true;
+        }
+        else {
+            showAnswers = true;
+            if (!gameWon) {
                 $('.sidebar2').text("Next Move: " + open[0].moves[0]);
             }
-        }
+        } 
     });
 
     $('.tile').on('mouseenter', changeColor).on('mouseleave', changeColor);
@@ -238,6 +243,15 @@ $(document).ready(function() {
         makeNewPuzzle();
         solvePuzzle();
     });
+
+    function makeSwap(thisid) {
+        $('.blank').addClass('tile');
+        $('.blank').html($(thisid).html());
+        $('.blank').removeClass('blank');
+        $(thisid).addClass('blank');
+        $(thisid).removeClass('tile');
+        $(thisid).html("");
+    };
 
     $('#autosolve').on('click', function() {
         var counter = 0;
@@ -255,12 +269,8 @@ $(document).ready(function() {
             var temp = board[x];
             board[x] = board[blankid];
             board[blankid] = temp;
-            $('.blank').addClass('tile');
-            $('.blank').html($(thisid).html());
-            $('.blank').removeClass('blank');
-            $(thisid).addClass('blank');
-            $(thisid).removeClass('tile');
-            $(thisid).html("");
+            alert('hi');
+            setTimeout(makeSwap(thisid), 500);
             counter++;
             moves++;
         }

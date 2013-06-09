@@ -41,6 +41,7 @@
     user-select: none;
     cursor: default;
     box-shadow: 0px 4px #700000;
+    font-size: 1.2em;
     }
 
 .tile:active {
@@ -59,7 +60,7 @@
 }
 
 .darkanswer:hover {
-    opacity: .7;
+    opacity: .8;
 }
 
 .blank {
@@ -79,6 +80,7 @@
     user-select: none;
     cursor: default;
     box-shadow: 0px 4px #666666;
+    font-size: 1.2em;
 }
 
 .row {
@@ -89,8 +91,7 @@ button {
     font-size: 1.2em;
     padding: 8px;
     border-radius: 5px;
-    width: 150px;
-    display: block;
+    width: 200px;
     opacity: 0.75;
     float: right;
 }
