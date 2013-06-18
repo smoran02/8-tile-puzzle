@@ -6,6 +6,11 @@ $(document).ready(function() {
     var closed = [];
     var moves = 0;
     var showAnswers = false;
+    var interval;
+    var answerInterval;
+    var counter = 0;
+    var solving = false;
+    var hintGiven = false;
 
     function Node(boardArray) {
         this.manDistance = -1;
@@ -44,14 +49,11 @@ $(document).ready(function() {
     };
 
     function makeNewPuzzle() {
-        $('.victory').hide();
+        $('.sidebar2').hide();
+        stopAnswers();
         gameWon = false;
         moves = 0;
-        if (showAnswers) {
-            $('.sidebar2').text("Next Move: " + open[0].moves[0]);
-        }
         $('.blank').removeClass('blank');
-        $('.sidebar2').text("Next Move: ");
         for (var i = 0; i < board.length; i++) {
             var index = Math.floor(Math.random() * 8);
             var temp = board[i];
@@ -187,7 +189,8 @@ $(document).ready(function() {
             });
         }
         if (showAnswers) {
-        $('.sidebar2').text("Next Move: " + open[0].moves[0]);
+            var thisid = returnId();
+            interval = setInterval(function() {highlightAnswers(thisid);}, 500);
         }
     };
 
@@ -210,27 +213,75 @@ $(document).ready(function() {
             return mDistance;
     };
 
+    function makeSwap() {
+        var blankid = parseInt($('.blank').attr('id')[2]);
+        var thisid = -1;
+        var x = -1;
+        var nextMove = open[0].moves[counter];
+        for (var i = 0; i < 9; i++) {
+            if (board[i] == nextMove) {
+                thisid = document.getElementById('sq' + i);
+                x = i;
+            }
+        }
+        var temp = board[x];
+        board[x] = board[blankid];
+        board[blankid] = temp;
+        $('.blank').addClass('tile');
+        $('.blank').html($(thisid).html());
+        $('.blank').removeClass('blank');
+        $(thisid).addClass('blank');
+        $(thisid).removeClass('tile');
+        $(thisid).html("");
+        counter++;
+        moves++;
+        if (calculateMD(board) == 0) {
+            clearInterval(answerInterval);
+            $('.sidebar2').html("It took you " + moves + " moves, but was it really you?");
+            $('.sidebar2').show();
+            solving = false;
+        }
+    };
+
+    function highlightAnswers(thisid) {
+        $(thisid).toggleClass('answers');
+    };
+
+    function returnId() {
+        for (var i = 0; i < 9; i++) {
+            if (board[i] == open[0].moves[0]) {
+                return document.getElementById("sq" + i);
+            }
+        }
+    };
+
+    function stopAnswers() {
+        clearInterval(interval);
+        $('.answers').removeClass('answers');
+    }
+
     makeNewPuzzle();
     solvePuzzle();
 
     $('#hint').on('click', function() {
-        if (gameWon == false) {
-            $('.sidebar2').text("Next Move: " + open[0].moves[0]);
+        if (!gameWon && !showAnswers && !hintGiven) {
+            var thisid = returnId();
+            interval = setInterval(function() {highlightAnswers(thisid);}, 500);
+            hintGiven = true;
         }
     });
 
     $('#answers').on('click', function() {
         $(this).toggleClass('darkanswer');
+        stopAnswers();
         if (showAnswers) {
             showAnswers = false;
-            if (!gameWon) {
-                $('.sidebar2').text("Next Move: ");
-            }
         }
         else {
             showAnswers = true;
-            if (!gameWon) {
-                $('.sidebar2').text("Next Move: " + open[0].moves[0]);
+            if (!gameWon && !solving) {
+                var thisid = returnId();
+                interval = setInterval(function() {highlightAnswers(thisid);}, 500);
             }
         } 
     });
@@ -238,46 +289,22 @@ $(document).ready(function() {
     $('.tile').on('mouseenter', changeColor).on('mouseleave', changeColor);
 
     $('#newGame').on('click', function() {
-        $('.blank').addClass('tile');
-        $('.blank').removeClass('blank');
-        makeNewPuzzle();
-        solvePuzzle();
+        if (!solving) {
+            $('.blank').addClass('tile');
+            $('.blank').removeClass('blank');
+            makeNewPuzzle();
+            solvePuzzle();
+        }
     });
 
-    function makeSwap(thisid) {
-        $('.blank').addClass('tile');
-        $('.blank').html($(thisid).html());
-        $('.blank').removeClass('blank');
-        $(thisid).addClass('blank');
-        $(thisid).removeClass('tile');
-        $(thisid).html("");
-    };
-
     $('#autosolve').on('click', function() {
-        var counter = 0;
-        while (calculateMD(board) != 0) {
-            var blankid = parseInt($('.blank').attr('id')[2]);
-            var thisid = -1;
-            var x = -1;
-            var nextMove = open[0].moves[counter];
-            for (var i = 0; i < 9; i++) {
-                if (board[i] == nextMove) {
-                    thisid = document.getElementById('sq' + i);
-                    x = i;
-                }
-            }
-            var temp = board[x];
-            board[x] = board[blankid];
-            board[blankid] = temp;
-            alert('hi');
-            setTimeout(makeSwap(thisid), 500);
-            counter++;
-            moves++;
+        stopAnswers();
+        if (!gameWon) {
+            solving = true;
+            counter = 0;
+            answerInterval = setInterval(makeSwap, 500);
+            gameWon = true;
         }
-        gameWon = true;
-        $('.victory').html("I guess you won the game in " + moves + " moves??");
-        $('.victory').show();
-        $('.sidebar2').text("Next Move: ");
     });
 
     $('.tile').on('click', function() {
@@ -289,7 +316,8 @@ $(document).ready(function() {
             (thisid + 3 == blankid) || 
             ((parseInt(thisid / 3) == parseInt(blankid / 3)) && (Math.abs(thisid - blankid) == 1)))) {
                 moves++;
-                $('.sidebar2').text("Next Move: ");
+                hintGiven = false;
+                stopAnswers();
                 var temp = board[thisid];
                 board[thisid] = board[blankid];
                 board[blankid] = temp;
@@ -301,9 +329,8 @@ $(document).ready(function() {
                 $(this).removeClass('tile');
                 $(this).html("");
                 if (calculateMD(board) == 0) {
-                    $('.victory').html("You won the game in " + moves + " moves!");
-                    $('.victory').show();
-                    $('.sidebar2').text("Next Move: ");
+                    $('.sidebar2').html("You won the game in " + moves + " moves!");
+                    $('.sidebar2').show();
                     gameWon = true;
                 }
         }
