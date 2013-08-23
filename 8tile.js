@@ -1,5 +1,5 @@
 $(document).ready(function() {
-   
+
     var board = [0,1,2,3,4,5,6,7,8];
     var gameWon = false;
     var open = [];
@@ -32,15 +32,9 @@ $(document).ready(function() {
                     this.manDistance++;
                 }
                 this.manDistance += Math.abs(x - y);
-            }  
+            }
 
             this.fOfx = parseInt(this.manDistance) + parseInt(this.moves.length);
-        };
-
-        this.trackOutputs = function() {
-            $('.sidebar2').html("Array contents:<br/>" + this.numbers +
-                                "<br/><br/>ManHattan Distance:<br/>" + this.manDistance +
-                                "<br/><br/>Moves:<br/>" + moves);
         };
     }
 
@@ -178,7 +172,7 @@ $(document).ready(function() {
                         addToQueue.moves.push(nextMove);
                         addToQueue.calcHeuristics();
                         if (nextMove != open[0].moves[open[0].moves.length - 1]) {
-                            addStateToQueue(addToQueue);    
+                            addStateToQueue(addToQueue);
                         }
                 }
             }
@@ -208,7 +202,7 @@ $(document).ready(function() {
                     mDistance++;
                 }
                 mDistance += Math.abs(x - y);
-            }  
+            }
 
             return mDistance;
     };
@@ -261,9 +255,9 @@ $(document).ready(function() {
     }
 
     makeNewPuzzle();
-    solvePuzzle();
 
     $('#hint').on('click', function() {
+    		solvePuzzle();
         if (!gameWon && !showAnswers && !hintGiven) {
             var thisid = returnId();
             interval = setInterval(function() {highlightAnswers(thisid);}, 500);
@@ -273,6 +267,7 @@ $(document).ready(function() {
 
     $('#answers').on('click', function() {
         $(this).toggleClass('darkanswer');
+        solvePuzzle();
         stopAnswers();
         if (showAnswers) {
             showAnswers = false;
@@ -283,7 +278,7 @@ $(document).ready(function() {
                 var thisid = returnId();
                 interval = setInterval(function() {highlightAnswers(thisid);}, 500);
             }
-        } 
+        }
     });
 
     $('.tile').on('mouseenter', changeColor).on('mouseleave', changeColor);
@@ -293,12 +288,12 @@ $(document).ready(function() {
             $('.blank').addClass('tile');
             $('.blank').removeClass('blank');
             makeNewPuzzle();
-            solvePuzzle();
         }
     });
 
     $('#autosolve').on('click', function() {
         stopAnswers();
+        solvePuzzle();
         if (!gameWon) {
             solving = true;
             counter = 0;
@@ -312,8 +307,8 @@ $(document).ready(function() {
         var blankid = parseInt($('.blank').attr('id')[2]);
 
         if (gameWon == false &&
-            ((thisid - 3 == blankid) || 
-            (thisid + 3 == blankid) || 
+            ((thisid - 3 == blankid) ||
+            (thisid + 3 == blankid) ||
             ((parseInt(thisid / 3) == parseInt(blankid / 3)) && (Math.abs(thisid - blankid) == 1)))) {
                 moves++;
                 hintGiven = false;
@@ -321,7 +316,9 @@ $(document).ready(function() {
                 var temp = board[thisid];
                 board[thisid] = board[blankid];
                 board[blankid] = temp;
-                solvePuzzle();
+                if (showAnswers) {
+                		solvePuzzle();
+                }
                 $('.blank').addClass('tile');
                 $('.blank').html($(this).html());
                 $('.blank').removeClass('blank');
