@@ -1,3 +1,4 @@
 <h1>8 Tile Puzzle</h1>
 
-<p>The goal for this project is to use the Manhattan Distance heuristic to solve any possible 8 tile puzzle. The puzzle itself will be implemented in the browser using Javascript, and the user will be able to play the puzzle as well as request the next move based on the algorithm.</p>
+<p>This project is a playable 8 tile puzzle. It is written in Javascript and is playable in the browser.</p>
+<p>I used the A* search algorithm to solve the puzzle with the guidance of the Manhattan Distance heuristic. The project also includes a one time hint, a constant answer notification, and an automatic solver. The auto solver visually shows how to solve each puzzle. Just by watching it I've already gotten much more efficient at doing the puzzle.</p>
