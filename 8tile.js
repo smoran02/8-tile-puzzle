@@ -182,10 +182,6 @@ $(document).ready(function() {
                 return c.fOfx - d.fOfx;
             });
         }
-        if (showAnswers) {
-            var thisid = returnId();
-            interval = setInterval(function() {highlightAnswers(thisid);}, 500);
-        }
     };
 
     function calculateMD(boardArray) {
