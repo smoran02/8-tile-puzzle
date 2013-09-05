@@ -255,9 +255,9 @@ $(document).ready(function() {
     }
 
     makeNewPuzzle();
+    solvePuzzle();
 
     $('#hint').on('click', function() {
-    		solvePuzzle();
         if (!gameWon && !showAnswers && !hintGiven) {
             var thisid = returnId();
             interval = setInterval(function() {highlightAnswers(thisid);}, 500);
@@ -267,7 +267,6 @@ $(document).ready(function() {
 
     $('#answers').on('click', function() {
         $(this).toggleClass('darkanswer');
-        solvePuzzle();
         stopAnswers();
         if (showAnswers) {
             showAnswers = false;
@@ -288,12 +287,12 @@ $(document).ready(function() {
             $('.blank').addClass('tile');
             $('.blank').removeClass('blank');
             makeNewPuzzle();
+            solvePuzzle();
         }
     });
 
     $('#autosolve').on('click', function() {
         stopAnswers();
-        solvePuzzle();
         if (!gameWon) {
             solving = true;
             counter = 0;
@@ -316,9 +315,7 @@ $(document).ready(function() {
                 var temp = board[thisid];
                 board[thisid] = board[blankid];
                 board[blankid] = temp;
-                if (showAnswers) {
-                		solvePuzzle();
-                }
+								solvePuzzle();
                 $('.blank').addClass('tile');
                 $('.blank').html($(this).html());
                 $('.blank').removeClass('blank');
