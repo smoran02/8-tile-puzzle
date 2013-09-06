@@ -2,23 +2,28 @@
     font-family: 'Fresca', georgia, sans-serif;
 }
 
+.container {
+		width: 900px;
+		margin: 0 auto;
+}
+
 .wrapper {
     margin-top: 80px;
     text-align: center;
-    width: 35%;
+    width: 350px;
     display: inline-block;
 }
 
 .sidebar1 {
     margin-top: 80px;
-    width: 30%;
+    width: 225px;
     display: inline-block;
     overflow: hidden;
 }
 
 .sidebar2 {
     margin-top: 80px;
-    width: 15%;
+    width: 225px;
     display: inline-block;
     font-family: georgia, sans-serif;
     font-size: 1.6em;
